@@ -6,6 +6,7 @@
 	"mainsrc": "./src",
 	"projects": [],
 	"dependencies": {
+		"github.com/gabrielbaltazar/gbswagger": "^3.1.0",
 		"github.com/hashload/horse": "^3.1.6"
 	}
 }

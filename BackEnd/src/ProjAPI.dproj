@@ -50,7 +50,8 @@
         <DCC_K>false</DCC_K>
         <DCC_Namespace>System;Xml;Data;Datasnap;Web;Soap;$(DCC_Namespace)</DCC_Namespace>
         <SanitizedProjectName>ProjAPI</SanitizedProjectName>
-    <DCC_UnitSearchPath>..\modules\.dcp;..\modules\.dcu;$(DCC_UnitSearchPath);..\modules;..\modules\horse\src;modules\.dcp;modules\.dcu;modules;modules\horse\src</DCC_UnitSearchPath></PropertyGroup>
+        <DCC_UnitSearchPath>..\modules\.dcp;..\modules\.dcu;..\modules;..\modules\horse\src;..\modules\gbswagger\Source\Core;..\modules\gbswagger\Source\Datasnap;..\modules\gbswagger\Source\Horse;..\modules\gbswagger\Source\Validator;$(DCC_UnitSearchPath);..\modules\jhonson\src;modules\.dcp;modules\.dcu;modules;modules\gbswagger\Source\Core;modules\gbswagger\Source\Datasnap;modules\gbswagger\Source\Horse;modules\gbswagger\Source\Validator;modules\horse\src</DCC_UnitSearchPath>
+    </PropertyGroup>
     <PropertyGroup Condition="'$(Base_Win32)'!=''">
         <DCC_UsePackage>vclwinx;fmx;vclie;DbxCommonDriver;bindengine;IndyIPCommon;VCLRESTComponents;FireDACCommonODBC;FireDACCommonDriver;appanalytics;IndyProtocols;vclx;Skia.Package.RTL;IndyIPClient;dbxcds;vcledge;bindcompvclwinx;bindcompfmx;inetdb;FireDACSqliteDriver;DbxClientDriver;soapmidas;vclactnband;fmxFireDAC;dbexpress;DBXMySQLDriver;VclSmp;inet;vcltouch;fmxase;dbrtl;Skia.Package.FMX;fmxdae;FireDACMSAccDriver;CustomIPTransport;vcldsnap;DBXInterBaseDriver;IndySystem;Skia.Package.VCL;vcldb;vclFireDAC;bindcomp;FireDACCommon;IndyCore;RESTBackendComponents;bindcompdbx;rtl;FireDACMySQLDriver;FireDACADSDriver;RESTComponents;DBXSqliteDriver;vcl;IndyIPServer;dsnapxml;dsnapcon;adortl;vclimg;FireDACPgDriver;FireDAC;inetdbxpress;xmlrtl;tethering;bindcompvcl;dsnap;CloudService;fmxobj;bindcompvclsmp;soaprtl;soapserver;FireDACIBDriver;$(DCC_UsePackage)</DCC_UsePackage>
         <DCC_Namespace>Winapi;System.Win;Data.Win;Datasnap.Win;Web.Win;Soap.Win;Xml.Win;Bde;$(DCC_Namespace)</DCC_Namespace>
@@ -92,6 +93,9 @@
         </DelphiCompile>
         <DCCReference Include="infrastructure\uConexao.pas"/>
         <DCCReference Include="infrastructure\uTesteConexaoSQLServer.pas"/>
+        <DCCReference Include="controller\Controller.Tarefas.pas"/>
+        <DCCReference Include="model\uModel.Tarefa.pas"/>
+        <DCCReference Include="dao\uTarefa.DAO.pas"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>
