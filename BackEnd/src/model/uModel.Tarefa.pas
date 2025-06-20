@@ -2,9 +2,6 @@ unit uModel.Tarefa;
 
 interface
 
-uses
-  GBSwagger.Model.Attributes;
-
 type
   TTarefaModel = class
     private
@@ -16,7 +13,7 @@ type
       FDataCriacao: TDateTime;
       FDataConclusao: TDateTime;
 
-    public
+    published
       property Id : Integer read FId write FId;
       property Titulo: string read FTitulo write FTitulo;
       property Descricao: string read FDescricao write FDescricao;

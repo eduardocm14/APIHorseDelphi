@@ -13,21 +13,14 @@ uses
   Horse.GBSwagger,
   Controller.Tarefas in 'controller\Controller.Tarefas.pas',
   uModel.Tarefa in 'model\uModel.Tarefa.pas',
-  uTarefa.DAO in 'dao\uTarefa.DAO.pas';
+  uTarefa.DAO in 'dao\uTarefa.DAO.pas',
+  uModel.Util in 'model\uModel.Util.pas';
 
 begin
   THorse.
         Use(HorseSwagger);
 
-  THorse.
-        Get('tarefas',
-        procedure(Req: THorseRequest; Res: THorseResponse)
-        begin
-
-        end
-        );
-
-  Writeln('Servidor rodando em http://localhost:9000');
+  Writeln('Servidor rodando com Swagger em http://localhost:9000//swagger/doc/html');
   THorse.Listen(9000);
 
 end.

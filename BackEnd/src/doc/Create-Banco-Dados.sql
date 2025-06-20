@@ -12,7 +12,7 @@ CREATE TABLE Tarefas (
     Titulo NVARCHAR(255) NOT NULL,
     Descricao NVARCHAR(MAX) NULL,
     Prioridade INT NOT NULL, -- 1'Baixo', 2'Médio', 3'Alto'
-    Status NVARCHAR(50) NOT NULL, -- 'Aguardando', 'Andamento', 'Concluída', etc.
+    Status NVARCHAR(50) NOT NULL, -- 'Aguardando', 'Andamento', 'Concluída'.
     DataCriacao DATETIME DEFAULT GETDATE() NOT NULL,
     DataConclusao DATETIME NULL
 );

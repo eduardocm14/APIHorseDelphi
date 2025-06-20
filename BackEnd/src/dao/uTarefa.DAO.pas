@@ -3,15 +3,21 @@ unit uTarefa.DAO;
 interface
 
 uses
-  System.JSON, Data.Win.ADODB, System.Classes;
+  System.JSON,
+  Data.Win.ADODB,
+  System.Classes,
+  uModel.Tarefa;
 
 type
   TTarefasDAO = class
   public
     class function ListarTodas: TJSONArray;
     class procedure Criar(AJson: TJSONObject);
-    class procedure Atualizar(AID: Integer; AJson: TJSONObject);
+    class procedure Atualizar(const AID: Integer; const ANovoStatus: string);
     class procedure Remover(AID: Integer);
+    class function TotalTarefas: Integer;
+    class function MediaPrioridadePendentes: Double;
+    class function TarefasConcluidasUltimos7Dias: Integer;
   end;
 
 implementation
@@ -66,7 +72,7 @@ begin
   try
     Query.Connection := Conexao.GetConnection;
     Query.SQL.Text :=
-      'INSERT INTO Tarefas (Titulo, Descricao, Prioridade, Status, DataCriacao, DataConclusao) ' +
+      'INSERT INTO Tarefas (Titulo, Descricao, Prioridade, Status) ' +
       'VALUES (:Titulo, :Descricao, :Prioridade, :Status)';
     Query.Parameters.ParamByName('Titulo').Value := AJson.GetValue<string>('Titulo');
     Query.Parameters.ParamByName('Descricao').Value := AJson.GetValue<string>('Descricao');
@@ -79,7 +85,7 @@ begin
   end;
 end;
 
-class procedure TTarefasDAO.Atualizar(AID: Integer; AJson: TJSONObject);
+class procedure TTarefasDAO.Atualizar(const AID: Integer; const ANovoStatus: string);
 var
   Conexao: TConexao;
   Query: TADOQuery;
@@ -89,7 +95,7 @@ begin
   try
     Query.Connection := Conexao.GetConnection;
     Query.SQL.Text := 'UPDATE Tarefas SET Status = :Status WHERE ID = :ID';
-    Query.Parameters.ParamByName('Status').Value := AJson.GetValue<string>('Status');
+    Query.Parameters.ParamByName('Status').Value := ANovoStatus;
     Query.Parameters.ParamByName('ID').Value := AID;
     Query.ExecSQL;
   finally
@@ -110,6 +116,68 @@ begin
     Query.SQL.Text := 'DELETE FROM Tarefas WHERE ID = :ID';
     Query.Parameters.ParamByName('ID').Value := AID;
     Query.ExecSQL;
+  finally
+    Query.Free;
+    Conexao.Free;
+  end;
+end;
+
+class function TTarefasDAO.TotalTarefas: Integer;
+var
+  Conexao: TConexao;
+  Query: TADOQuery;
+begin
+  Conexao := TConexao.Create;
+  Query := TADOQuery.Create(nil);
+  try
+    Query.Connection := Conexao.GetConnection;
+    Query.SQL.Text := 'SELECT COUNT(*) AS Total FROM Tarefas';
+    Query.Open;
+    Result := Query.FieldByName('Total').AsInteger;
+  finally
+    Query.Free;
+    Conexao.Free;
+  end;
+end;
+
+class function TTarefasDAO.MediaPrioridadePendentes: Double;
+var
+  Conexao: TConexao;
+  Query: TADOQuery;
+begin
+  Conexao := TConexao.Create;
+  Query := TADOQuery.Create(nil);
+  try
+    Query.Connection := Conexao.GetConnection;
+    Query.SQL.Text := 'SELECT AVG(CAST(Prioridade AS FLOAT)) AS MediaPrioridade ' +
+                      'FROM Tarefas WHERE Status = ''Pendente''';
+    Query.Open;
+    // Retorna 0 se não houver tarefas pendentes
+    if Query.FieldByName('MediaPrioridade').IsNull then
+      Result := 0
+    else
+      Result := Query.FieldByName('MediaPrioridade').AsFloat;
+  finally
+    Query.Free;
+    Conexao.Free;
+  end;
+end;
+
+class function TTarefasDAO.TarefasConcluidasUltimos7Dias: Integer;
+var
+  Conexao: TConexao;
+  Query: TADOQuery;
+begin
+  Conexao := TConexao.Create;
+  Query := TADOQuery.Create(nil);
+  try
+    Query.Connection := Conexao.GetConnection;
+    Query.SQL.Text := 'SELECT COUNT(*) AS TotalConcluidas ' +
+                      'FROM Tarefas ' +
+                      'WHERE Status = ''Concluído'' ' +
+                      'AND DataConclusao >= DATEADD(day, -7, GETDATE())';
+    Query.Open;
+    Result := Query.FieldByName('TotalConcluidas').AsInteger;
   finally
     Query.Free;
     Conexao.Free;
