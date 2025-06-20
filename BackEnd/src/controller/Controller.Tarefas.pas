@@ -40,11 +40,11 @@ type
     [SwagResponse(THTTPStatus.HTTP_CREATED, nil, 'Criado com sucesso')]
     procedure DoPost;
 
-    [SwagPUT('tarefas/{id}', 'Atualizar dados da tarefa')]
+    [SwagPOST('tarefas/{id}/atualizar-status', 'Atualiza o status da tarefa')]
     [SwagParamPath('id', 'ID da tarefa')]
-    [SwagParamBody('body', TTarefaModel, True, 'Status da Tarefa a ser atualizado')]
-    [SwagResponse(THTTPStatus.OK, nil, 'Atualizado com sucesso')]
-    procedure DoPut;
+    [SwagParamBody('body', TStatusModel, True, 'Novo status')]
+    [SwagResponse(200, nil, 'Status atualizado com sucesso')]
+    procedure AtualizarStatus;
 
     [SwagDELETE('tarefas/{id}', 'Excluir tarefa')]
     [SwagParamPath('id', 'ID da tarefa')]
@@ -119,60 +119,43 @@ begin
   end;
 end;
 
-procedure TControllerTarefa.DoPut;
+procedure TControllerTarefa.AtualizarStatus;
 var
   ID: Integer;
   IDStr: string;
-  Body: TTarefaModel;
+  JSONBody: TJSONObject;
+  StatusStr: string;
+  RawJSON: string;
 begin
   try
     if not FRequest.Params.TryGetValue('id', IDStr) then
-    begin
-      FResponse.Status(THTTPStatus.BAD_REQUEST)
-        .ContentType('application/json')
-        .Send('{"erro":"ID da tarefa não informado"}');
-      Exit;
-    end;
+      raise Exception.Create('ID da tarefa não informado');
 
     ID := StrToIntDef(IDStr, 0);
     if ID = 0 then
-    begin
-      FResponse.Status(THTTPStatus.BAD_REQUEST)
-        .ContentType('application/json')
-        .Send('{"erro":"ID inválido"}');
-      Exit;
-    end;
+      raise Exception.Create('ID inválido');
 
-    try
-      Body := FRequest.Body<TTarefaModel>;
-    except
-      on E: Exception do
-      begin
-        FResponse.Status(THTTPStatus.BAD_REQUEST)
-          .ContentType('application/json')
-          .Send(Format('{"erro":"Corpo da requisição inválido: %s"}', [E.Message]));
-        Exit;
-      end;
-    end;
+    RawJSON := FRequest.Body;
+    //Writeln('JSON recebido: ' + RawJSON);  // Log do JSON recebido
 
-    if Body.Status.Trim.IsEmpty then
-    begin
-      FResponse.Status(THTTPStatus.BAD_REQUEST)
-        .ContentType('application/json')
-        .Send('{"erro":"Status da tarefa não informado"}');
-      Exit;
-    end;
+    JSONBody := FRequest.Body<TJSONObject>;
+    if not Assigned(JSONBody) then
+      raise Exception.Create('Corpo JSON inválido ou malformado');
 
-    // Atualiza somente o status da tarefa no DAO
-    TTarefasDAO.Atualizar(ID, Body.Status);
+    if not JSONBody.TryGetValue<string>('status', StatusStr) then
+      raise Exception.Create('Campo "status" ausente ou inválido');
+
+    if StatusStr.Trim.IsEmpty then
+      raise Exception.Create('Status da tarefa não informado');
+
+    TTarefasDAO.Atualizar(ID, StatusStr);
 
     FResponse.Status(THTTPStatus.OK)
       .ContentType('application/json')
-      .Send('{"mensagem":"Status da tarefa atualizado com sucesso"}');
-
+      .Send('{"mensagem":"Status atualizado com sucesso"}');
   except
     on E: Exception do
-      FResponse.Status(THTTPStatus.INTERNAL_SERVER_ERROR)
+      FResponse.Status(THTTPStatus.BAD_REQUEST)
         .ContentType('application/json')
         .Send(Format('{"erro":"%s"}', [E.Message]));
   end;
@@ -185,7 +168,7 @@ begin
   try
     ID := FRequest.Params['id'].ToInteger;
     TTarefasDAO.Remover(ID);
-    FResponse.Status(THTTPStatus.HTTP_NO_CONTENT); // No Content
+    FResponse.Status(THTTPStatus.HTTP_NO_CONTENT);
   except
     on E: Exception do
       FResponse.Status(THTTPStatus.INTERNAL_SERVER_ERROR)

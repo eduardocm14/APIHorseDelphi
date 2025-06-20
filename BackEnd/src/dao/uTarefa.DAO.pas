@@ -95,7 +95,7 @@ begin
   try
     Query.Connection := Conexao.GetConnection;
     Query.SQL.Text := 'UPDATE Tarefas SET Status = :Status WHERE ID = :ID';
-    Query.Parameters.ParamByName('Status').Value := ANovoStatus;
+    Query.Parameters.ParamByName('Status').Value := Trim(ANovoStatus);
     Query.Parameters.ParamByName('ID').Value := AID;
     Query.ExecSQL;
   finally

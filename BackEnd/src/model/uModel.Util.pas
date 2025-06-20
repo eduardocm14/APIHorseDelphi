@@ -1,7 +1,8 @@
-unit uModel.Util;
+Ôªøunit uModel.Util;
 
 interface
 
+{$M+} // habilitar RTTI (requerido para serializa√ß√£o JSON)
 type
   /// <summary>
   /// Modelo para representar o status de uma tarefa
@@ -11,7 +12,7 @@ type
     FStatus: string;
   public
     /// <summary>
-    /// Status da tarefa (ex: 'Pendente', 'Em Andamento', 'ConcluÌdo')
+    /// Status da tarefa (ex: 'Pendente', 'Em Andamento', 'Conclu√≠do')
     /// </summary>
     property status: string read FStatus write FStatus;
   end;
@@ -43,27 +44,27 @@ type
   end;
 
   /// <summary>
-  /// Modelo para representar a mÈdia de prioridade
+  /// Modelo para representar a m√©dia de prioridade
   /// </summary>
   TMediaPrioridadeModel = class
   private
     FMedia: Double;
   public
     /// <summary>
-    /// Valor da mÈdia calculada
+    /// Valor da m√©dia calculada
     /// </summary>
     property media: Double read FMedia write FMedia;
   end;
 
   /// <summary>
-  /// Modelo para representar o total de tarefas concluÌdas
+  /// Modelo para representar o total de tarefas conclu√≠das
   /// </summary>
   TTotalConcluidasModel = class
   private
     FTotal: Integer;
   public
     /// <summary>
-    /// Quantidade de tarefas concluÌdas
+    /// Quantidade de tarefas conclu√≠das
     /// </summary>
     property total: Integer read FTotal write FTotal;
   end;

@@ -13,7 +13,7 @@ type
       FDataCriacao: TDateTime;
       FDataConclusao: TDateTime;
 
-    published
+    public
       property Id : Integer read FId write FId;
       property Titulo: string read FTitulo write FTitulo;
       property Descricao: string read FDescricao write FDescricao;
