@@ -140,6 +140,7 @@ object FormPrincipal: TFormPrincipal
     Font.Height = -15
     Font.Name = 'Segoe UI'
     Font.Style = []
+    Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goRowSelect, goFixedRowDefAlign]
     ParentFont = False
     TabOrder = 5
   end
