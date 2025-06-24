@@ -6,7 +6,7 @@
         <Projects Include="BackEnd\src\ProjAPI.dproj">
             <Dependencies/>
         </Projects>
-        <Projects Include="FrontEnd\ControleTarefas.dproj">
+        <Projects Include="FrontEnd\Project\ControleTarefas.dproj">
             <Dependencies/>
         </Projects>
     </ItemGroup>
@@ -27,13 +27,13 @@
         <MSBuild Projects="BackEnd\src\ProjAPI.dproj" Targets="Make"/>
     </Target>
     <Target Name="ControleTarefas">
-        <MSBuild Projects="FrontEnd\ControleTarefas.dproj"/>
+        <MSBuild Projects="FrontEnd\Project\ControleTarefas.dproj"/>
     </Target>
     <Target Name="ControleTarefas:Clean">
-        <MSBuild Projects="FrontEnd\ControleTarefas.dproj" Targets="Clean"/>
+        <MSBuild Projects="FrontEnd\Project\ControleTarefas.dproj" Targets="Clean"/>
     </Target>
     <Target Name="ControleTarefas:Make">
-        <MSBuild Projects="FrontEnd\ControleTarefas.dproj" Targets="Make"/>
+        <MSBuild Projects="FrontEnd\Project\ControleTarefas.dproj" Targets="Make"/>
     </Target>
     <Target Name="Build">
         <CallTarget Targets="ProjAPI;ControleTarefas"/>

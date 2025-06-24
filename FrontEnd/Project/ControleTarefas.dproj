@@ -123,10 +123,15 @@
         <DelphiCompile Include="$(MainSource)">
             <MainSource>MainSource</MainSource>
         </DelphiCompile>
-        <DCCReference Include="uForm.Principal.pas">
+        <DCCReference Include="..\Forms\uForm.Principal.pas">
             <Form>FormPrincipal</Form>
             <FormType>dfm</FormType>
         </DCCReference>
+        <DCCReference Include="..\Models\uTarefaModel.pas"/>
+        <DCCReference Include="..\Services\uTarefaService.pas"/>
+        <DCCReference Include="..\Utils\uHTTPStatusPrioridade.pas"/>
+        <DCCReference Include="..\DTOs\uEstatisticasDto.pas"/>
+        <DCCReference Include="..\Utils\uAppConsts.pas"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>
