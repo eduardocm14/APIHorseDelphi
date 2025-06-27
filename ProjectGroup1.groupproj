@@ -9,6 +9,9 @@
         <Projects Include="FrontEnd\Project\ControleTarefas.dproj">
             <Dependencies/>
         </Projects>
+        <Projects Include="FrontEnd\TesteUnitario.dproj">
+            <Dependencies/>
+        </Projects>
     </ItemGroup>
     <ProjectExtensions>
         <Borland.Personality>Default.Personality.12</Borland.Personality>
@@ -35,14 +38,23 @@
     <Target Name="ControleTarefas:Make">
         <MSBuild Projects="FrontEnd\Project\ControleTarefas.dproj" Targets="Make"/>
     </Target>
+    <Target Name="TesteUnitario">
+        <MSBuild Projects="FrontEnd\TesteUnitario.dproj"/>
+    </Target>
+    <Target Name="TesteUnitario:Clean">
+        <MSBuild Projects="FrontEnd\TesteUnitario.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="TesteUnitario:Make">
+        <MSBuild Projects="FrontEnd\TesteUnitario.dproj" Targets="Make"/>
+    </Target>
     <Target Name="Build">
-        <CallTarget Targets="ProjAPI;ControleTarefas"/>
+        <CallTarget Targets="ProjAPI;ControleTarefas;TesteUnitario"/>
     </Target>
     <Target Name="Clean">
-        <CallTarget Targets="ProjAPI:Clean;ControleTarefas:Clean"/>
+        <CallTarget Targets="ProjAPI:Clean;ControleTarefas:Clean;TesteUnitario:Clean"/>
     </Target>
     <Target Name="Make">
-        <CallTarget Targets="ProjAPI:Make;ControleTarefas:Make"/>
+        <CallTarget Targets="ProjAPI:Make;ControleTarefas:Make;TesteUnitario:Make"/>
     </Target>
     <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
 </Project>

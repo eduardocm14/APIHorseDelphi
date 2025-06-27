@@ -21,6 +21,7 @@ begin
         Use(HorseSwagger);
 
   Writeln('Servidor rodando com Swagger em http://localhost:9000//swagger/doc/html');
+  Writeln('API_BASE_URL = http://localhost:9000/v1');
   THorse.Listen(9000);
 
 end.
