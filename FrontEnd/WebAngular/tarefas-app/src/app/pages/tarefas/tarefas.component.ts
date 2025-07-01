@@ -10,6 +10,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBarModule, MatSnackBar } from '@angular/material/snack-bar';
 import { FormsModule } from '@angular/forms';
 import { forkJoin } from 'rxjs';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-tarefas',
@@ -35,18 +36,21 @@ export class TarefasComponent implements OnInit, AfterViewInit {
   totalTarefas = 0;
   mediaPrioridade = 0;
   totalConcluidas = 0;
+  dataHoraCriacao: Date | null = null;
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
   constructor(
     private tarefaService: TarefaService,
     private snackBar: MatSnackBar,
-    private cdRef: ChangeDetectorRef
-  ) {}
+    private cdRef: ChangeDetectorRef,
+    private dialog: MatDialog
+  ) { }
 
   ngOnInit(): void {
     this.carregarTarefas();
     this.carregarEstatisticas();
+    this.dataHoraCriacao = new Date();
   }
 
   ngAfterViewInit(): void {
@@ -105,5 +109,14 @@ export class TarefasComponent implements OnInit, AfterViewInit {
       },
       error: () => this.snackBar.open('Erro ao remover tarefa.', 'Fechar', { duration: 3000 })
     });
+  }
+
+  prioridadeParaTexto(value: number): string {
+    switch (value) {
+      case 1: return 'Baixo';
+      case 2: return 'Médio';
+      case 3: return 'Alto';
+      default: return 'Desconhecida';
+    }
   }
 }
