@@ -11,6 +11,9 @@ import { MatSnackBarModule, MatSnackBar } from '@angular/material/snack-bar';
 import { FormsModule } from '@angular/forms';
 import { forkJoin } from 'rxjs';
 import { MatDialog } from '@angular/material/dialog';
+import { NovaTarefaDialogComponent } from '../nova-tarefa-dialog/nova-tarefa-dialog.component';
+import { AtualizarStatusDialogComponent } from '../atualizar-status-tarefa-dialog/atualizar-status-tarefa-dialog.component';
+import { ConfirmDialogComponent } from '..//confirm-dialog/confirm-dialog.component';
 
 @Component({
   selector: 'app-tarefas',
@@ -23,7 +26,8 @@ import { MatDialog } from '@angular/material/dialog';
     MatButtonModule,
     MatSelectModule,
     MatSnackBarModule,
-    FormsModule
+    FormsModule,
+    ConfirmDialogComponent
   ],
   templateUrl: './tarefas.component.html',
   styleUrls: ['./tarefas.component.css']
@@ -44,7 +48,7 @@ export class TarefasComponent implements OnInit, AfterViewInit {
     private tarefaService: TarefaService,
     private snackBar: MatSnackBar,
     private cdRef: ChangeDetectorRef,
-    private dialog: MatDialog
+    private dialog: MatDialog,
   ) { }
 
   ngOnInit(): void {
@@ -91,23 +95,51 @@ export class TarefasComponent implements OnInit, AfterViewInit {
     });
   }
 
-  atualizarStatus(tarefa: Tarefa): void {
-    if (!tarefa.id || !tarefa.status) return;
+  alterarStatus(tarefa: Tarefa, novoStatus: string): void {
+    if (!confirm(`Deseja alterar o status da tarefa "${tarefa.titulo}" para "${novoStatus}"?`)) return;
 
-    this.tarefaService.atualizarStatus(tarefa.id, tarefa.status).subscribe({
-      next: () => this.snackBar.open('Status atualizado com sucesso!', 'Fechar', { duration: 3000 }),
-      error: () => this.snackBar.open('Erro ao atualizar status.', 'Fechar', { duration: 3000 })
+    if (tarefa.id === undefined || tarefa.id === null) {
+      this.snackBar.open('ID da tarefa não definido. Não é possível alterar o status.', 'Fechar', { duration: 3000 });
+      return;
+    }
+
+    this.tarefaService.atualizarStatus(tarefa.id.toString(), novoStatus).subscribe({
+      next: () => {
+        this.snackBar.open('Status atualizado com sucesso!', 'Fechar', { duration: 3000 });
+        this.carregarTarefas(); // ou recarregue a lista de tarefas
+      },
+      error: (err) => {
+        console.error('Erro ao atualizar status:', err);
+        this.snackBar.open('Erro ao atualizar status da tarefa.', 'Fechar', { duration: 3000 });
+      }
     });
   }
 
-  removerTarefa(id: string): void {
-    this.tarefaService.remover(id).subscribe({
-      next: () => {
-        this.snackBar.open('Tarefa removida com sucesso!', 'Fechar', { duration: 3000 });
-        this.carregarTarefas();
-        this.carregarEstatisticas();
-      },
-      error: () => this.snackBar.open('Erro ao remover tarefa.', 'Fechar', { duration: 3000 })
+  removerTarefa(tarefa: Tarefa): void {
+    console.log('[DEBUG] tarefa recebida para exclusão:', tarefa);
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      data: {
+        mensagem: `Deseja realmente excluir a tarefa "${tarefa.titulo}"?`
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(confirmado => {
+      if (confirmado) {
+        if (tarefa.id === undefined || tarefa.id === null) {
+          this.snackBar.open('ID da tarefa não definido.', 'Fechar', { duration: 3000 });
+          return;
+        }
+
+        this.tarefaService.remover(tarefa.id.toString()).subscribe({
+          next: () => {
+            this.snackBar.open('Tarefa excluída com sucesso!', 'Fechar', { duration: 3000 });
+            this.carregarTarefas();
+          },
+          error: () => {
+            this.snackBar.open('Erro ao excluir tarefa.', 'Fechar', { duration: 3000 });
+          }
+        });
+      }
     });
   }
 
@@ -118,5 +150,30 @@ export class TarefasComponent implements OnInit, AfterViewInit {
       case 3: return 'Alto';
       default: return 'Desconhecida';
     }
+  }
+
+  abrirFormulario(): void {
+    const dialogRef = this.dialog.open(NovaTarefaDialogComponent, {
+      width: '500px'
+    });
+
+    dialogRef.afterClosed().subscribe((resultado) => {
+      if (resultado) {
+        this.carregarTarefas(); // recarrega a lista se salvou
+      }
+    });
+  }
+
+  abrirDialogAtualizarStatus(tarefa: Tarefa): void {
+    const dialogRef = this.dialog.open(AtualizarStatusDialogComponent, {
+      width: '400px',
+      data: tarefa
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.carregarTarefas(); // Atualize a tabela
+      }
+    });
   }
 }

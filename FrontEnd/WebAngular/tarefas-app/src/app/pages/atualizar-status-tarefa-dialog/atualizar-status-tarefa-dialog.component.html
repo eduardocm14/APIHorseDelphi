@@ -1,0 +1,27 @@
+<h2 mat-dialog-title style="margin-bottom: 0.5rem;">Atualizar Status da Tarefa</h2>
+
+<form [formGroup]="statusForm" class="form-container">
+  <mat-form-field appearance="outline" class="full-width" disabled>
+    <mat-label>Título</mat-label>
+    <input matInput [value]="tarefa.titulo" readonly>
+  </mat-form-field>
+
+  <mat-form-field appearance="outline" class="full-width" disabled>
+    <mat-label>Descrição</mat-label>
+    <textarea matInput [value]="tarefa.descricao" rows="3" readonly></textarea>
+  </mat-form-field>
+
+  <mat-form-field appearance="outline" class="full-width">
+    <mat-label>Status*</mat-label>
+    <mat-select formControlName="status">
+      <mat-option *ngFor="let status of statusOpcoes" [value]="status">
+        {{ status }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <div class="actions">
+    <button mat-button type="button" (click)="cancelar()">Cancelar</button>
+    <button mat-raised-button color="primary" (click)="salvar()" [disabled]="statusForm.invalid">Salvar</button>
+  </div>
+</form>
