@@ -7,6 +7,7 @@ program ProjAPI;
 uses
   System.SysUtils,
   Horse,
+  Horse.CORS,
   Data.Win.ADODB,
   uConexao in 'infrastructure\uConexao.pas',
   uTesteConexaoSQLServer in 'infrastructure\uTesteConexaoSQLServer.pas',
@@ -17,8 +18,11 @@ uses
   uModel.Util in 'model\uModel.Util.pas';
 
 begin
-  THorse.
-        Use(HorseSwagger);
+  with THorse do
+  begin
+    Use(HorseSwagger);
+    Use(CORS);
+  end;
 
   Writeln('Servidor rodando com Swagger em http://localhost:9000//swagger/doc/html');
   Writeln('API_BASE_URL = http://localhost:9000/v1');
